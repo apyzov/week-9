@@ -1,0 +1,91 @@
+using System;
+
+class WeatherForecast
+{
+    // Поля класса
+    private int temperature;
+    private string conditions;
+
+    // Конструктор класса
+    public WeatherForecast(int temp, string conditions)
+    {
+        SetTemperature(temp);
+        this.conditions = conditions;
+    }
+
+    // Метод для установки температуры с проверкой
+    public void SetTemperature(int temp)
+    {
+        if (temp > 15)
+        {
+            throw new ArgumentOutOfRangeException(nameof(temp), "Температура слишком высокая для зимнего сезона");
+        }
+        temperature = temp;
+    }
+
+    // Метод для получения прогноза погоды
+    public string GetForecast()
+    {
+        return $"Текущая температура: {temperature}°C, условия: {conditions}.";
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        try
+        {
+            // Создаем объект с корректными данными
+            WeatherForecast forecast = new WeatherForecast(-5, "снег");
+            Console.WriteLine(forecast.GetForecast());
+
+            // Пробуем установить аномально высокую температуру
+            Console.WriteLine("Попытка установить температуру 20°C...");
+            forecast.SetTemperature(20);
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            Console.WriteLine($"Ошибка: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+        }
+
+        // Консольное приложение для ввода значений пользователем
+        while (true)
+        {
+            try
+            {
+                Console.Write("\nВведите температуру (°C): ");
+                int userTemp = int.Parse(Console.ReadLine());
+
+                Console.Write("Введите погодные условия (например, снег, ясно, облачно): ");
+                string userConditions = Console.ReadLine();
+
+                WeatherForecast userForecast = new WeatherForecast(userTemp, userConditions);
+                Console.WriteLine(userForecast.GetForecast());
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Ошибка: введено некорректное значение температуры. Попробуйте снова.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Неизвестная ошибка: {ex.Message}");
+            }
+
+            Console.WriteLine("\nХотите попробовать снова? (да/нет)");
+            string answer = Console.ReadLine();
+            if (answer.ToLower() != "да")
+            {
+                break;
+            }
+        }
+    }
+}
